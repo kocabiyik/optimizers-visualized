@@ -3,8 +3,9 @@ library(av)
 # video specs ----
 width = 1920
 height = 1080
-framerate = 29
+framerate = 24
 verbose = TRUE
+apply_momentum = FALSE
 output = "gd-with-momentum.mp4"
 
 # music ----
@@ -37,18 +38,29 @@ num_iter <- len
 learning_rate <- 5e-04
 x_val <- 6
 y_val <- 6
+
+# momentum terms, if applicable
 beta = 0.95
 vdx = 0
 vdy = 0
+
+# initialize gd steps
 updates_x <- vector("numeric", length = num_iter)
 updates_y <- vector("numeric", length = num_iter)
 updates_z <- vector("numeric", length = num_iter)
 
 for (i in 1:num_iter) {
-  # momentum terms: vdx and vdy
-  vdx = beta * vdx + dx(x_val, y_val)
-  vdy = beta * vdy + dy(x_val, y_val)
   
+  if(apply_momentum) {
+    # momentum terms: vdx and vdy
+    vdx = beta * vdx + dx(x_val, y_val)
+    vdy = beta * vdy + dy(x_val, y_val)  
+  } else {
+    # without momentum
+    x_val <- x_val - learning_rate * dx(x_val, y_val)
+    y_val <- y_val - learning_rate * dy(x_val, y_val)
+  }
+    
   # updates
   x_val <- x_val - learning_rate * vdx
   y_val <- y_val - learning_rate * vdy
@@ -72,7 +84,7 @@ points(
 )
 
 # animation ----
-video <- av_capture_graphics(output = output, audio = big_horns_intro, 
+video <- av_capture_graphics(output = output, audio = NULL, 
                                {
                                  for (i in seq_len(len)) {
                                    
@@ -103,3 +115,4 @@ video <- av_capture_graphics(output = output, audio = big_horns_intro,
                              )
 # find video ----
 utils::browseURL(video)
+
