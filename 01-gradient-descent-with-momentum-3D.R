@@ -1,4 +1,3 @@
-library(av)
 library(tidyverse)
 library(stringr)
 library(glue)
@@ -7,7 +6,7 @@ library(glue)
 video_name = "gd-with-momentum2"
 height = 1080
 framerate = 29
-duration_in_sec = 5
+duration_in_sec = 10
 
 # gradient descent ----
 learning_rate <- 5e-04
@@ -27,7 +26,7 @@ plot_naming = "plot_%03d"
 # video specs auto calculated ----
 width = height*(16/9)
 num_iter <- duration_in_sec*framerate
-dir_name = str_c('video_', video_name)
+dir_name = str_c('frames_', video_name)
 len = num_iter
 
 # directory settings ----
@@ -90,7 +89,7 @@ for (i in seq_len(len)) {
   plot_name <- sprintf(plot_naming, i)
   png(glue('{dir_name}/{plot_name}.png'), width = width, height = height)
   
-  plt <- persp(x, y, z, theta = -50 - i * 0.05, 
+  plt <- persp(x, y, z, theta = -50 - i * 0.01, 
                phi = 20 + log(i), expand = 0.5, col = "lightblue", 
                border = "lightblue", axes = FALSE, box = FALSE, 
                ltheta = 100, shade = 0.9)
@@ -127,5 +126,6 @@ for (i in seq_len(len)) {
 # verbose for success
 if (as.logical(verbose)) cat("done!\n", file = stderr())
 
-cmd <- glue('ffmpeg  -framerate 10 -i {plot_naming}.png -s:v {width}x{height} -c:v libx264 -profile:v high -crf 20 -pix_fmt yuv420p -r 30 {video_name}.mp4')
+# generate the bash command for ffmpeg
+cmd <- glue('ffmpeg  -framerate {framerate} -i {dir_name}/{plot_naming}.png -s:v {width}x{height} -c:v libx264 -profile:v high -crf 20 -pix_fmt yuv420p -r 30 {video_name}.mp4')
 cmd
