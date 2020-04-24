@@ -4,6 +4,9 @@ library(stringr)
 library(latex2exp)
 library(glue)
 
+# settings
+apply_momentum <- FALSE
+
 # test function
 f <- function(x) ((x^2-4*x+4)*(x^2+4*x+2))
 
@@ -29,8 +32,12 @@ for (i in 1:240) {
   if (i==1) {next}
   
   dx = f_prime(x)
-  vdx = beta*vdx+dx
-  x = x-learning_rate*vdx
+  if(apply_momentum) {
+    vdx = beta*vdx+dx
+    x = x-learning_rate*vdx
+  } else {
+    x = x-learning_rate*dx
+  }
   x_updated_values[i] = x
 }
 
