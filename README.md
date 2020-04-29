@@ -1,5 +1,4 @@
-# ml-optimizations-vis
-Visualizations of ML Optimization Algorithms
+# Visualizations of ML Optimization Algorithms
 
 - Gradient Descent  
 - Gradient Descent with Momentum  
