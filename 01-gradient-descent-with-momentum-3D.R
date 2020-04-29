@@ -123,9 +123,9 @@ for (i in seq_len(len)) {
   
 }
 
-# verbose for success
+# verbose for success ----
 if (as.logical(verbose)) cat("done!\n", file = stderr())
 
-# generate the bash command for ffmpeg
+# generate the bash command for ffmpeg ----
 cmd <- glue('ffmpeg  -framerate {framerate} -i {dir_name}/{plot_naming}.png -s:v {width}x{height} -c:v libx264 -profile:v high -crf 20 -pix_fmt yuv420p -r 30 {video_name}.mp4')
 cmd
