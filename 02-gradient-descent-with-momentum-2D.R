@@ -86,20 +86,24 @@ for (i in seq(len_wait+len_run)) {
   
   
   p <- ggplot(data = data.frame(x = 0), mapping = aes(x = x)) +
-    stat_function(fun = f, color = 'darkgray') +
+    stat_function(fun = f, color = '#444444') +
     xlim(-4,4)
   
   # wait ...
   if(i<len_wait) {
     p + geom_point(x = df$x[1], y = df$y[1],
-                   color = 'blue',
+                   color = 'white',
                    size = seq(from = 0, to = 4, length.out = len_wait)[i],
                    alpha = 0.5)+
       theme(legend.position="none")+
       #ylab("f(x)")+
       #ggtitle(TeX('$f(x) = (x^2-4x+4)(x^2+4x+2)$'),
       #        subtitle = glue("Gradient Descent with Learning Rate: {learning_rate} and beta: {beta}"))+
-      theme_void()
+      theme_void()+
+      theme(
+        panel.background = element_rect(fill = "#000000",
+                                        colour = "black"
+        ))
     
   # run!
   } else {
@@ -108,10 +112,14 @@ for (i in seq(len_wait+len_run)) {
     df_to_plot$point_size <- seq(from = 0, to = 0.2, length.out = nrow(df_to_plot))
     x_on_iteration_i <- tail(df_to_plot$x,1)
     y_on_iteration_i <- tail(df_to_plot$y,1)
-    p + geom_point(data = df_to_plot, aes(x, y, alpha = point_alpha))+
-      geom_point(x = x_on_iteration_i, y = y_on_iteration_i, color = 'blue', size = 4, alpha = 0.5)+
+    p + geom_point(data = df_to_plot, aes(x, y, alpha = point_alpha), color = 'white')+
+      geom_point(x = x_on_iteration_i, y = y_on_iteration_i, color = 'white', size = 4, alpha = 0.5)+
       theme_void()+
-      theme(legend.position="none")
+      theme(legend.position="none")+
+      theme(
+        panel.background = element_rect(fill = "#000000",
+                                        colour = "black"
+      ))
       #ylab("f(x)") +
       #ggtitle(TeX('$f(x) = (x^2-4x+4)(x^2+4x+2)$'),
       #        subtitle = glue("Gradient Descent with Learning Rate: {learning_rate} and beta: {beta}"))   

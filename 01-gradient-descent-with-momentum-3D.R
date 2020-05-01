@@ -89,9 +89,10 @@ for (i in seq_len(len)) {
   plot_name <- sprintf(plot_naming, i)
   png(glue('{dir_name}/{plot_name}.png'), width = width, height = height)
   
+  par(bg = 'black')
   plt <- persp(x, y, z, theta = -50 - i * 0.01, 
-               phi = 20 + log(i), expand = 0.5, col = "lightblue", 
-               border = "lightblue", axes = FALSE, box = FALSE, 
+               phi = 20 + log(i), expand = 0.5, col = "#999999", 
+               border = "#111111", axes = FALSE, box = FALSE, 
                ltheta = 100, shade = 0.9)
   
   # adding points, representing gradient updates
@@ -100,14 +101,14 @@ for (i in seq_len(len)) {
   
   if (i<n_back) {
     start_n = 1
-    point_colors = c(rep("white", i-1), "black")
+    point_colors = c(rep("#999999", i-1), "white")
     point_sizes = c(seq(1, 2, length.out = n_back-1), 2.5)
     point_sizes = tail(point_sizes, i)
     point_transparency = c(seq(from = 0.1, to = 0.9, length.out = n_back-1),1)
     point_transparency = tail(point_transparency)
   } else {
     start_n = i-n_back+1
-    point_colors = c(rep("white", n_back-1), "black")
+    point_colors = c(rep("#999999", n_back-1), "white")
     point_sizes = c(seq(0.1, 2, length.out = n_back-1), 2.5)
     point_transparency = c(seq(from = 0.1, to = 0.9, length.out = n_back-1),1)
   }
