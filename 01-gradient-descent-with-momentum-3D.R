@@ -77,7 +77,8 @@ for (i in 1:num_iter) {
 
 # visualize
 i = 50
-par(bg = 'black')
+par(bg = 'black',
+    family = 'Helvetica Neue Light')
 plt <- persp(x, y, z, theta = 50 - i * 0.01, 
              phi = 20 + log(i), expand = 0.5, col = "#999999", 
              border = "#111111", axes = FALSE, box = FALSE, 
@@ -105,10 +106,10 @@ points(
           updates_y[start_n:i], 
           updates_z[start_n:i],
           pmat = plt), pch = 16, cex = point_sizes,
-  col = point_colors,
-  alpha = point_sizes
+  col = point_colors
 )
 
+title("Gradient Descent with Momentum", col.main= "#888888", font=4)
 
 # animation ----
 
