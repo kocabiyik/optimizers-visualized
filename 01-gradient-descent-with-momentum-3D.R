@@ -8,14 +8,14 @@ source('00-test-functions-for-optimization.R')
 
 # video specs ----
 video_name = "gd-with-momentum2"
-height = 1080
+height = 2160
 framerate = 29
 duration_in_sec = 10
 
 # gradient descent ----
 learning_rate <- 5e-04
-x_val <- -6
-y_val <- 6
+x_val <- -5
+y_val <- 2
 
 # momentum terms, if applicable ----
 apply_momentum = TRUE
@@ -92,7 +92,7 @@ plot_iteration <- function(i) {
                
                border = "#111111",
                col = "#999999",
-               axes = FALSE, box = FALSE 
+               axes = FALSE, box = FALSE
                )
   
   # adding points, representing gradient updates
@@ -119,11 +119,16 @@ plot_iteration <- function(i) {
             pmat = plt), pch = 16, cex = point_sizes,
     col = point_colors
   )
-  
-  title("Gradient Descent with Momentum", col.main= "#555555", font=3, cex.main = 2)
+  title("Gradient Descent with Momentum", col.main= "#555555", font=3, cex.main = 4)
+  title(str_c("\n\n iteration:", as.character(i)), col.main= "#555555", font=3, cex.main = 3)
 }
 
+# see one frame ----
 plot_iteration(50)
+png(glue('test.png'), width = width, height = height)
+par(bg = 'black')
+plot_iteration(i)
+dev.off()
 
 # animation ----
 for (i in seq_len(len)) {
