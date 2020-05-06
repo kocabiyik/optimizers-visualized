@@ -19,7 +19,7 @@ y_val <- 2
 
 # momentum terms, if applicable ----
 apply_momentum = TRUE
-beta = 0.95
+beta = 0.98
 vdx = 0
 vdy = 0
 
@@ -57,8 +57,8 @@ for (i in 1:num_iter) {
   
   if(apply_momentum) {
     # momentum terms: vdx and vdy
-    vdx = beta * vdx + dx(x_val, y_val)
-    vdy = beta * vdy + dy(x_val, y_val)  
+    vdx = beta * vdx + (1-beta)*dx(x_val, y_val)
+    vdy = beta * vdy + (1-beta)*dy(x_val, y_val)  
   } else {
     # without momentum
     x_val <- x_val - learning_rate * dx(x_val, y_val)

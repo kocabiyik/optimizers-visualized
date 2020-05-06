@@ -18,11 +18,11 @@ x = 3.5
 x_initial = x
 
 # momentum terms, if applicable ----
-apply_momentum = TRUE
+apply_momentum = FALSE
 beta = 0.95
 x_updated_values <- numeric(0)
 vdx = 0
-beta = 0.9
+beta = 0.95
 
 # video generation settings ----
 verbose = TRUE
@@ -50,7 +50,7 @@ for (i in 1:240) {
   
   dx = f_prime(x)
   if(apply_momentum) {
-    vdx = beta*vdx+dx
+    vdx = beta*vdx+(1-beta)*dx
     x = x-learning_rate*vdx
   } else {
     x = x-learning_rate*dx
