@@ -13,7 +13,7 @@ framerate = 29
 duration_in_sec = 10
 
 # gradient descent ----
-learning_rate <- 5e-04
+learning_rate <- 0.01
 x_val <- -5
 y_val <- 2
 
@@ -37,7 +37,7 @@ len = num_iter
 if (!dir.exists(dir_name)) { dir.create(dir_name) }
 
 # test function ----
-f <- McCormick
+f <- Himmelblau
 
 # domains of test function ----
 x <- seq(-6, 6, length = 100)
@@ -78,7 +78,7 @@ for (i in 1:num_iter) {
 plot_iteration <- function(i) {
   
   # theme
-  par(bg = 'black', family = 'Helvetica Neue Light')
+  par(bg = 'black', family = 'Ubuntu Light')
   
   # surface
   plt <- persp(x, y, z,
@@ -90,7 +90,7 @@ plot_iteration <- function(i) {
                lphi = 10,
                shade = 0.9,
                
-               border = "#111111",
+               border = "darkgray",
                col = "#999999",
                axes = FALSE, box = FALSE
                )
