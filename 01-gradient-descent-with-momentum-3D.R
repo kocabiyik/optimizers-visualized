@@ -37,7 +37,7 @@ len = num_iter
 if (!dir.exists(dir_name)) { dir.create(dir_name) }
 
 # test function ----
-f <- Himmelblau
+f <- Parabolic
 
 # domains of test function ----
 x <- seq(-6, 6, length = 100)
@@ -124,7 +124,7 @@ plot_iteration <- function(i) {
 }
 
 # see one frame ----
-plot_iteration(50)
+plot_iteration(170)
 png(glue('test.png'), width = width, height = height)
 par(bg = 'black')
 plot_iteration(i)
