@@ -8,7 +8,7 @@ Optimizers are how we are updating the parameters. The objective is finding a se
 
 ## Stochastic Gradient Descent
 
-The most important parameter is the learning rate. The higher the learning rate is, the higher the step size taken. This is the update steps with a fixed learning rate:  
+The most critical parameter is the learning rate. The higher the learning rate is, the higher the step size taken. Below is the update steps with a fixed learning rate:  
 
 ![SGD](images/sgd.gif)
 
@@ -17,8 +17,13 @@ Another practical technique is adjusting the learning rate.
 
 #### Implementation:
 
-Decay the learning rate until the iteration $\tau$.  
+- The learning rate is decayed until the iteration $\tau$.  
 
-$$ \epsilon_k = (1-\alpha)\epsilon_0+\alpha \epsilon_{\tau}$$
-where $\alpha = \frac{k}{\tau}$
+- The learning rate on the iteration $k$ calculated as $ \epsilon_k = (1-\alpha)\epsilon_0+\alpha \epsilon_{\tau}$ where $\alpha = \frac{k}{\tau}$  
 
+- The learning rate after the iteration $\tau$ is kept constant.  
+- $\epsilon_{\tau}$ is generally set to 1 % of the initial learning rate ($\epsilon_0$).  
+
+Below animation is the update steps with a decaying learning rate.  The initial learning rate is set to a higher value than the one in the previous example, but it is decayed after the 10. iteration.  
+
+![SGD with Decaying Learning Rate](images/sgd-with-decay.gif)
