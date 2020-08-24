@@ -20,7 +20,7 @@ class Video(Scene):
         return f'Video({self.video_name!r}, {self.frame_rate!r} fps, with {self.resolution!r}p resolution)'
 
     def get_fmpeg_video_cmd(self):
-        return 'ffmpeg  -framerate {frame_rate} -i {dir_name}/{plot_naming}.png -s:v {width}x{height} -c:v libx264 -profile:v high -crf 20 -pix_fmt yuv420p -r 30  {video_name}'\
+        return 'ffmpeg  -framerate {frame_rate} -i {dir_name}/{plot_naming}.png -s:v {width}x{height} -c:v libx264 -profile:v high -crf 20 -pix_fmt yuv420p -r 30  {video_name}' \
               .format(frame_rate=self.frame_rate,
                       dir_name = self.dir_to_save,
                       plot_naming = self.plot_naming,
@@ -39,4 +39,6 @@ class GIFfromMP4Video(Scene):
         return f'GIF({self.gif_file_name!r} from {self.video_file_name!r})'
     
     def get_fmpeg_gif_cmd(self):
-        return f'ffmpeg -i {self.video_file_name} -pix_fmt rgb24 {self.gif_file_name}'
+        return f'ffmpeg -i {self.video_file_name} -vf palettegen palette.png -y \n\
+ffmpeg -i {self.video_file_name} -pix_fmt rgb24 -i palette.png -lavfi paletteuse {self.gif_file_name} \n\
+rm palette.png'

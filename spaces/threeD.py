@@ -19,10 +19,15 @@ class Himmelblau:
         self.x_space = np.arange(space_lim_min, space_lim_max, 0.25)
         self.y_space = np.arange(space_lim_min, space_lim_max, 0.25)
         
-    def run_gd(self, learning_rate = 0.01, beta = 0.9, iteration = 50):
+    def run_gd(self, epsilon = 0.01, alpha = 0.9, iteration = 50):
         
-        vdx = 0
-        vdy = 0
+        """
+        epsilon: the learning rate
+        alpha: momentum parameter
+        """
+        
+        vx = 0
+        vy = 0
         
         for i in range(iteration):
             if i == 0:
@@ -35,16 +40,16 @@ class Himmelblau:
                 z_vals = [z]
                 
             # partial derivatives
-            dx = 4*x**3-4*x*y-42*x+4*x*y-14
-            dy = 4*y**3+2*x**2-26*y+4*x*y-22
+            gx = 4*x**3-4*x*y-42*x+4*x*y-14
+            gy = 4*y**3+2*x**2-26*y+4*x*y-22
             
             # momentum
-            vdx = beta * vdx + dx
-            vdy = beta * vdy + dy
+            vx = alpha * vx - epsilon * gx
+            vy = alpha * vy - epsilon * gy
             
             # updates
-            x = x-learning_rate*vdx
-            y = y-learning_rate*vdy
+            x = x+vx
+            y = y+vy
             z = (x**2+y-11)**2+(x+y**2-7)**2+10
             
             # record steps
@@ -61,10 +66,11 @@ class Himmelblau:
         return steps
         
         
-    def plot_steps(self, steps, azimuth = 10, elevation = 55, color_map = cm.Greys,
-                  n_back = 20):
+    def plot_steps(self, steps, steps_until_n=10, azimuth = 10, elevation = 55, color_map = cm.Greys,
+                  n_back = 20, plot_title = None):
         
-        fig = plt.figure(figsize=(20, 16))
+        plt.ioff()
+        fig = plt.figure(figsize = (16,9))
         ax = fig.gca(projection='3d')
         ax.set_axis_off()
         
@@ -78,14 +84,21 @@ class Himmelblau:
                                rstride = 2, cstride = 2, 
                                cmap=color_map)
         
-        snake_len = len(steps['x_vals'][-n_back:])
+        x_vals = steps['x_vals'][:steps_until_n]
+        y_vals = steps['y_vals'][:steps_until_n]
+        z_vals = steps['z_vals'][:steps_until_n]
+        
+        snake_len = len(x_vals[-n_back:])
         point_sizes = [i for i in range(snake_len-1)]
         point_sizes.append(100) # the last point is bigger
         
-        ax.scatter(steps['x_vals'][-n_back:],
-                   steps['y_vals'][-n_back:],
-                   steps['z_vals'][-n_back:],
+        ax.scatter(x_vals[-n_back:],
+                   y_vals[-n_back:],
+                   z_vals[-n_back:],
                    c = 'black', marker="o", alpha=1, s = point_sizes)
         
         ax.view_init(azim=azimuth, elev=elevation)
-        plt.rc('figure')
+        ax.set_title(plot_title, fontdict={'fontsize': 20, 'fontweight': 'medium'})
+        plt.close()
+        
+        return fig
