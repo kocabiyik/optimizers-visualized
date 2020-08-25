@@ -12,10 +12,9 @@ The most critical parameter is the learning rate. The higher the learning rate i
 
 ![SGD](images/sgd.gif)
 
-### Learning Rate Decay
-Another practical technique is adjusting the learning rate.  
+One way of making the learning faster is Decaying the Learning Rate:  
 
-#### Implementation
+**Implementation:**
 
 - The learning rate is decayed until the iteration $\tau$.  
 
@@ -28,13 +27,13 @@ Below animation is the update steps with a decaying learning rate.  The initial 
 
 ![SGD with Decaying Learning Rate](images/sgd-with-lr-decay.gif)  
 
-### Momentum
+## Momentum
 
 Momentum is one technique for accelerating the learning.  
 
 Momentum requires a new hyperparameter: $\alpha$. It controls the acceleration. It is a common practice to pick 0.9, 0.95 and 0.99. It doesn't have to be a fixed value but can be adapted in the training process.  
 
-#### Implementation
+**Implementation:**
 
 - $\epsilon$ is the learning rate
 - $\alpha$ is the hyperparameter for the acceleration,
@@ -43,6 +42,30 @@ Momentum requires a new hyperparameter: $\alpha$. It controls the acceleration. 
 - Compute velocity update as $v ← \alpha v − \epsilon g$
 - Apply update: $\theta ← \theta + v$
 
-Here is an animation in a 3D surface:  
+Here is an animation in a 3D surface:
 
 ![SGD with Decaying Learning Rate](images/sgd-with-momentum.gif)  
+
+
+The problem of oscillations:  
+Applying momentum can result in too much oscillations. As you can see in the above illustrations, there many U turns and spirals around a local/global minimum points. Nesterov Momentum is reducing those oscillations.  
+
+## Nesterov Momentum
+
+The difference between the standard Momentum and the Nesterov momentum algorithms is _where_ the gradients are calculated.  
+In the Nesterov Momentum, gradients are evaluated after the current velocity is applied.  
+
+**Implementation:**
+
+- $\epsilon$ is the learning rate
+- $\alpha$ is the hyperparameter for the acceleration,
+- $\theta$ and velocity $v$  are the initial parameters. $v$ is initially set to 0.  
+- Apply and interim update $\tilde{\theta} ← \theta + \alpha v$
+- Compute gradients (at interim point) with parameter $\tilde{\theta}$ and set it to $g$.
+- Compute velocity update as $v ← \alpha v − \epsilon g$
+- Apply update: $\theta ← \theta + v$
+
+Below is a visualization of the Momentum (black) vs Nesterov Momentum (red).  
+The Nesterov Momentum is not oscilating much comparing to the standard Momentum algorithm. 
+
+![SGD with Decaying Learning Rate](images/momentum-vs-nesterov-momentum.gif)  

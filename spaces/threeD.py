@@ -19,7 +19,7 @@ class Himmelblau:
         self.x_space = np.arange(space_lim_min, space_lim_max, 0.25)
         self.y_space = np.arange(space_lim_min, space_lim_max, 0.25)
         
-    def run_gd(self, epsilon = 0.01, alpha = 0.9, iteration = 50):
+    def run_gd(self, epsilon = 0.01, alpha = 0.9, iteration = 50, nesterov=False):
         
         """
         epsilon: the learning rate
@@ -30,6 +30,8 @@ class Himmelblau:
         vy = 0
         
         for i in range(iteration):
+            
+            # keep the initial values
             if i == 0:
                 x = self.x_initial
                 y = self.y_initial
@@ -38,20 +40,43 @@ class Himmelblau:
                 x_vals = [x]
                 y_vals = [y]
                 z_vals = [z]
+            
+            # the Nesterov Momentum ----
+            if nesterov:
                 
-            # partial derivatives
-            gx = 4*x**3-4*x*y-42*x+4*x*y-14
-            gy = 4*y**3+2*x**2-26*y+4*x*y-22
+                # apply interim update
+                x_tilda = x+(alpha*vx)
+                y_tilda = y+(alpha*vy)
+                
+                # compute gradient at interim point
+                gx = 4*x_tilda**3-4*x_tilda*y_tilda-42*x_tilda+4*x_tilda*y_tilda-14
+                gy = 4*y_tilda**3+2*x_tilda**2-26*y_tilda+4*x_tilda*y_tilda-22
+                
+                # compute velocity update
+                vx = alpha * vx - epsilon * gx
+                vy = alpha * vy - epsilon * gy
+                
+                # apply update
+                x = x+vx
+                y = y+vy
+                z = (x**2+y-11)**2+(x+y**2-7)**2+10
             
-            # momentum
-            vx = alpha * vx - epsilon * gx
-            vy = alpha * vy - epsilon * gy
+            # the Standard Momentum ----
+            else:
             
-            # updates
-            x = x+vx
-            y = y+vy
-            z = (x**2+y-11)**2+(x+y**2-7)**2+10
+                # compute gradient
+                gx = 4*x**3-4*x*y-42*x+4*x*y-14
+                gy = 4*y**3+2*x**2-26*y+4*x*y-22
             
+                # compute velocity update
+                vx = alpha * vx - epsilon * gx
+                vy = alpha * vy - epsilon * gy
+            
+                # apply update
+                x = x+vx
+                y = y+vy
+                z = (x**2+y-11)**2+(x+y**2-7)**2+10
+                
             # record steps
             x_vals.append(x)
             y_vals.append(y)
@@ -66,8 +91,11 @@ class Himmelblau:
         return steps
         
         
-    def plot_steps(self, steps, steps_until_n=10, azimuth = 10, elevation = 55, color_map = cm.Greys,
-                  n_back = 20, plot_title = None):
+    def plot_steps(self, iters, steps_until_n=10, azimuth = 10, elevation = 55, color_map = cm.Greys,
+                  n_back = 20, plot_title = None, colors = ['black', 'green']):
+        """
+        iters: List of iteration dictionaries
+        """
         
         plt.ioff()
         fig = plt.figure(figsize = (16,9))
@@ -84,18 +112,23 @@ class Himmelblau:
                                rstride = 2, cstride = 2, 
                                cmap=color_map)
         
-        x_vals = steps['x_vals'][:steps_until_n]
-        y_vals = steps['y_vals'][:steps_until_n]
-        z_vals = steps['z_vals'][:steps_until_n]
-        
-        snake_len = len(x_vals[-n_back:])
-        point_sizes = [i for i in range(snake_len-1)]
-        point_sizes.append(100) # the last point is bigger
-        
-        ax.scatter(x_vals[-n_back:],
-                   y_vals[-n_back:],
-                   z_vals[-n_back:],
-                   c = 'black', marker="o", alpha=1, s = point_sizes)
+        loop_counter=0
+        for i in iters:
+            steps = i
+            
+            x_vals = steps['x_vals'][:steps_until_n]
+            y_vals = steps['y_vals'][:steps_until_n]
+            z_vals = steps['z_vals'][:steps_until_n]
+            
+            snake_len = len(x_vals[-n_back:])
+            point_sizes = [i for i in range(snake_len-1)]
+            point_sizes.append(100) # the last point is bigger
+            
+            ax.scatter(x_vals[-n_back:],
+                       y_vals[-n_back:],
+                       z_vals[-n_back:],
+                       c = colors[loop_counter], marker="o", alpha=1, s = point_sizes)
+            loop_counter+=1
         
         ax.view_init(azim=azimuth, elev=elevation)
         ax.set_title(plot_title, fontdict={'fontsize': 20, 'fontweight': 'medium'})
