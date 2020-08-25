@@ -44,7 +44,7 @@ Momentum requires a new hyperparameter: $\alpha$. It controls the acceleration. 
 
 Here is an animation in a 3D surface:
 
-![SGD with Decaying Learning Rate](images/sgd-with-momentum.gif)  
+![Momentum Animation](images/sgd-with-momentum.gif)  
 
 
 The problem of oscillations:  
@@ -68,4 +68,4 @@ In the Nesterov Momentum, gradients are evaluated after the current velocity is 
 Below is a visualization of the Momentum (black) vs Nesterov Momentum (red).  
 The Nesterov Momentum is not oscilating much comparing to the standard Momentum algorithm. 
 
-![SGD with Decaying Learning Rate](images/momentum-vs-nesterov-momentum.gif)  
+![Momentum vs Nesterov Momentum Comparison Animation](images/momentum-vs-nesterov-momentum.gif)  
