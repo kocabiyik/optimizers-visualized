@@ -8,3 +8,4 @@ frames_*
 .ipynb_checkpoints
 .Rproj
 *.pyc
+/frames/*
