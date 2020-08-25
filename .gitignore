@@ -6,3 +6,5 @@
 frames_*
 .DS_Store
 .ipynb_checkpoints
+.Rproj
+*.pyc
