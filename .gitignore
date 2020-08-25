@@ -9,3 +9,4 @@ frames_*
 .Rproj
 *.pyc
 /frames/*
+palette.png
