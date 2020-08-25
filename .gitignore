@@ -5,3 +5,4 @@
 *.mp4
 frames_*
 .DS_Store
+.ipynb_checkpoints
