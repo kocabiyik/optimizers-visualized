@@ -6,7 +6,9 @@ The Deep Learning book has a comprehensive chapter on optimizers. I am currently
 
 Optimizers are how we are updating the parameters. The objective is finding a set of $\theta$ values so that $J(\theta)$ is significantly lower. Starting with a relatively simple one:  
 
-## Stochastic Gradient Descent
+## Basic Optimization Algorithms
+
+### Stochastic Gradient Descent
 
 The most critical parameter is the learning rate. The higher the learning rate is, the higher the step size taken. Below is the update steps with a fixed learning rate:  
 
@@ -27,7 +29,7 @@ Below animation is the update steps with a decaying learning rate.  The initial 
 
 ![SGD with Decaying Learning Rate](images/sgd-with-lr-decay.gif)  
 
-## Momentum
+### Momentum
 
 Momentum is one technique for accelerating the learning.  
 
@@ -50,7 +52,7 @@ Here is an animation in a 3D surface:
 The problem of oscillations:  
 Applying momentum can result in too much oscillations. As you can see in the above illustrations, there many U turns and spirals around a local/global minimum points. Nesterov Momentum is reducing those oscillations.  
 
-## Nesterov Momentum
+### Nesterov Momentum
 
 The difference between the standard Momentum and the Nesterov momentum algorithms is _where_ the gradients are calculated.  
 In the Nesterov Momentum, gradients are evaluated after the current velocity is applied.  
@@ -69,3 +71,18 @@ Below is a visualization of the Momentum (black) vs Nesterov Momentum (red).
 The Nesterov Momentum is not oscilating much comparing to the standard Momentum algorithm. 
 
 ![Momentum vs Nesterov Momentum Comparison Animation](images/momentum-vs-nesterov-momentum.gif)  
+
+## Optimizers with Adaptive Learning Rates
+
+### AdaGrad
+
+AdaGrad is going from a shortest path. Here is the illusration:  
+![AdaGrad](images/adagrad.gif)  
+
+### RMSProp
+
+![AdaGrad](images/rmsprop.gif)  
+
+### Adam
+
+![Adam](images/adam.gif)  
