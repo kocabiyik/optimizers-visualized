@@ -1,49 +1,82 @@
+import math
 import matplotlib.pyplot as plt
 import numpy as np
 from mpl_toolkits.mplot3d import Axes3D
 from matplotlib import cm
-import math
 
-class Himmelblau:
+class Surface:
+    
+    def __init__(self, test_function, x=0, y=0):
+        self.x = x
+        self.y = y
+        self.test_function=test_function
+        
+    def get_z_at(self, x, y):
+        if self.test_function=='himmelblau':
+            return (x**2+y-11)**2+(x+y**2-7)**2
+        if self.test_function=='parabolic':
+            return x**2+y**2
+    
+    def get_gx_at(self, x, y):
+        if self.test_function=='himmelblau':
+            return 4*x**3-4*x*y-42*x+4*x*y-14
+        if self.test_function=='parabolic':
+            return 2*x
+    
+    def get_gy_at(self, x, y):
+        if self.test_function=='himmelblau':
+            return 4*y**3+2*x**2-26*y+4*x*y-22
+        if self.test_function=='parabolic':
+            return 2*y
+
+class State(Surface):
+    
+    """Iterates and returns history
     
     """
-    Himmelblau Test Function: https://en.wikipedia.org/wiki/Himmelblau%27s_function
-    """
-    
-    def __init__(self,
-                 x_initial = 0, y_initial = 0,
-                 space_lim_min = -5, space_lim_max = 5
-                
-                ):
+    def __init__(self, x_initial = 0, y_initial = 0, test_function = 'parabolic', space_lim_min = -5, space_lim_max = 5):
+        super().__init__(test_function)
         self.x_initial = x_initial
         self.y_initial = y_initial
         self.x_space = np.arange(space_lim_min, space_lim_max, 0.25)
         self.y_space = np.arange(space_lim_min, space_lim_max, 0.25)
-        
+
     # Stochastic Gradient Descent
-    def run_gd(self, epsilon = 0.01, alpha = 0.9, iteration = 50, nesterov=False):
+    def run_gd(self, epsilon=0.01, alpha=0.9, iteration=50, nesterov=False):
         
-        """
-        epsilon: the learning rate
-        alpha: momentum parameter
+        
+        """Runs Gradient Descent algorithm with momentum and returns the parameter update history.
+        
+        Resource:
+        https://www.deeplearningbook.org/contents/optimization.html#pf15
+        
+        Keyword Arguments:
+        epsilon -- the learning rate (default 0.01)
+        alpha -- momentum parameter (default 0.9)
+        iteration -- number of parameter updates (default 50)
+        nesterov -- whether the momentum is nesterov momentum or standard momentum (default False)
+        
+        Returns:
+        A dictionary containing 3 lists: x_history, y_history, z_history
         """
         
+        # initial velocities
         vx = 0
         vy = 0
         
         for i in range(iteration):
             
-            # keep the initial values
+            # keep the initial parameter values
             if i == 0:
                 x = self.x_initial
                 y = self.y_initial
-                z = (self.x_initial**2+self.y_initial-11)**2+(self.x_initial+self.y_initial**2-7)**2
+                z = self.get_z_at(x, y)
             
-                x_vals = [x]
-                y_vals = [y]
-                z_vals = [z]
+                x_history = [x]
+                y_history = [y]
+                z_history = [z]
             
-            # the Nesterov Momentum ----
+            # the nesterov momentum
             if nesterov:
                 
                 # apply interim update
@@ -51,8 +84,9 @@ class Himmelblau:
                 y_tilda = y+(alpha*vy)
                 
                 # compute gradient at interim point
-                gx = 4*x_tilda**3-4*x_tilda*y_tilda-42*x_tilda+4*x_tilda*y_tilda-14
-                gy = 4*y_tilda**3+2*x_tilda**2-26*y_tilda+4*x_tilda*y_tilda-22
+                current_state = self.get_gy_at(x_tilda, y_tilda)
+                gx = self.get_gx_at(x_tilda, y_tilda)
+                gy = self.get_gy_at(x_tilda, y_tilda)
                 
                 # compute velocity update
                 vx = alpha * vx - epsilon * gx
@@ -61,14 +95,15 @@ class Himmelblau:
                 # apply update
                 x = x+vx
                 y = y+vy
-                z = (x**2+y-11)**2+(x+y**2-7)**2+10
+                z = self.get_z_at(x, y)
             
-            # the Standard Momentum ----
+            # the standard Momentum
             else:
-            
+                
                 # compute gradient
-                gx = 4*x**3-4*x*y-42*x+4*x*y-14
-                gy = 4*y**3+2*x**2-26*y+4*x*y-22
+                current_state = self.get_z_at(x, y)
+                gx = self.get_gx_at(x, y)
+                gy = self.get_gy_at(x, y)
             
                 # compute velocity update
                 vx = alpha * vx - epsilon * gx
@@ -77,26 +112,37 @@ class Himmelblau:
                 # apply update
                 x = x+vx
                 y = y+vy
-                z = (x**2+y-11)**2+(x+y**2-7)**2+10
+                
+                
+                z = self.get_gy_at(x, y)
                 
             # record steps
-            x_vals.append(x)
-            y_vals.append(y)
-            z_vals.append(z)
+            x_history.append(x)
+            y_history.append(y)
+            z_history.append(z)
         
         steps = {
-            'x_vals': x_vals,
-            'y_vals': y_vals,
-            'z_vals': z_vals
+            'x_history': x_history,
+            'y_history': y_history,
+            'z_history': z_history
         }
         
         return steps
     
-    # Adagrad
-    def run_adagrad(self, epsilon, delta=1.e-7, iteration = 10):
+    def run_adagrad(self, epsilon=0.001, delta=1.e-7, iteration=50):
         
-        """
-        AdaGrad
+        """Runs AdaGrad algorithm and returns the parameter update history.
+        
+        Resource:
+        https://www.deeplearningbook.org/contents/optimization.html#pf22
+        
+        Keyword Arguments:
+        epsilon -- the learning rate
+        iteration -- number of parameter updates (default 50)
+        delta -- small constant for numerical stability (default 1.e-7)
+        
+        Returns:
+        A dictionary containing 3 lists: x_history, y_history, z_history
         """
         
         
@@ -105,52 +151,62 @@ class Himmelblau:
         
         for i in range(iteration):
             
-            # keep the initial values
+            # keep the initial parameter values
             if i == 0:
                 x = self.x_initial
                 y = self.y_initial
-                z = (self.x_initial**2+self.y_initial-11)**2+(self.x_initial+self.y_initial**2-7)**2
+                z = self.get_z_at(x, y)
             
-                x_vals = [x]
-                y_vals = [y]
-                z_vals = [z]
+                x_history = [x]
+                y_history = [y]
+                z_history = [z]
             
 
-            # Compute gradient
-            gx = 4*x**3-4*x*y-42*x+4*x*y-14
-            gy = 4*y**3+2*x**2-26*y+4*x*y-22
+            # compute gradient
+            gx = self.get_gx_at(x, y)
+            gy = self.get_gy_at(x, y)
             
-            # Accumulate squared gradient 
+            # accumulate squared gradient 
             rx = rx + gx*gx
             ry = ry + gy*gy
             
-            # Compute update
+            # compute update
             delta_theta_x = -(epsilon*gx)/(delta+math.sqrt(rx))
             delta_theta_y = -(epsilon*gy)/(delta+math.sqrt(ry))
             
             # apply update
             x = x+delta_theta_x
             y = y+delta_theta_y
-            z = (x**2+y-11)**2+(x+y**2-7)**2+10
+            z = self.get_z_at(x, y)
                 
             # record steps
-            x_vals.append(x)
-            y_vals.append(y)
-            z_vals.append(z)
+            x_history.append(x)
+            y_history.append(y)
+            z_history.append(z)
         
         steps = {
-            'x_vals': x_vals,
-            'y_vals': y_vals,
-            'z_vals': z_vals
+            'x_history': x_history,
+            'y_history': y_history,
+            'z_history': z_history
         }
         
         return steps
     
-    def run_rmsprop(self, epsilon, rho = 0.9, delta=1.e-7, iteration = 10):
+    def run_rmsprop(self, epsilon=0.001, rho=0.9, delta=1.e-7, iteration=50):
         
-        """
-        RMSProp
-        rho: decay rate
+        """Runs RMSProp algorithm and returns the parameter update history.
+        
+        Resource:
+        https://www.deeplearningbook.org/contents/optimization.html#pf22
+        
+        Keyword Arguments:
+        epsilon -- the learning rate
+        rho -- decay rate (default 0.9)
+        delta -- small constant for numerical stability (default 1.e-7)
+        iteration -- number of parameter updates (default 50)
+        
+        Returns:
+        A dictionary containing 3 lists: x_history, y_history, z_history
         """
         
         
@@ -163,48 +219,58 @@ class Himmelblau:
             if i == 0:
                 x = self.x_initial
                 y = self.y_initial
-                z = (self.x_initial**2+self.y_initial-11)**2+(self.x_initial+self.y_initial**2-7)**2
+                z = self.get_z_at(x, y)
             
-                x_vals = [x]
-                y_vals = [y]
-                z_vals = [z]
+                x_history = [x]
+                y_history = [y]
+                z_history = [z]
             
-
-            # Compute gradient
-            gx = 4*x**3-4*x*y-42*x+4*x*y-14
-            gy = 4*y**3+2*x**2-26*y+4*x*y-22
+            # compute gradient
+            gx = self.get_gx_at(x,y)
+            gy = self.get_gy_at(x,y)
             
-            # Accumulate squared gradient 
+            # accumulate squared gradient 
             rx = rho*rx + (1-rho)*gx*gx
             ry = rho*ry+ (1-rho)*gy*gy
             
-            # Compute update
+            # compute update
             delta_theta_x = -(epsilon*gx)/(delta+math.sqrt(rx))
             delta_theta_y = -(epsilon*gy)/(delta+math.sqrt(ry))
             
             # apply update
             x = x+delta_theta_x
             y = y+delta_theta_y
-            z = (x**2+y-11)**2+(x+y**2-7)**2+10
+            z = self.get_z_at(x, y)
                 
             # record steps
-            x_vals.append(x)
-            y_vals.append(y)
-            z_vals.append(z)
+            x_history.append(x)
+            y_history.append(y)
+            z_history.append(z)
         
         steps = {
-            'x_vals': x_vals,
-            'y_vals': y_vals,
-            'z_vals': z_vals
+            'x_history': x_history,
+            'y_history': y_history,
+            'z_history': z_history
         }
         
         return steps
     
-    def run_adam(self, epsilon, rho = 0.9, alpha = 0.9, delta=1.e-7, iteration = 10):
+    def run_adam(self, epsilon=0.001, rho =0.9, alpha=0.9, delta=1.e-7, iteration=50):
+
+        """Runs Adam algorithm and returns the parameter update history.
         
-        """
-        Adam
-        rho: decay rate
+        Resource:
+        https://www.deeplearningbook.org/contents/optimization.html#pf23
+        
+        Keyword Arguments:
+        epsilon -- the learning rate
+        rho -- decay rate (default 0.9)
+        alpha -- momentum parameter (default 0.9)
+        delta -- small constant for numerical stability (default 1.e-7)
+        iteration -- number of parameter updates (default 50)
+        
+        Returns:
+        A dictionary containing 3 lists: x_history, y_history, z_history
         """
         
         # initial velocities
@@ -220,11 +286,11 @@ class Himmelblau:
             if i == 0:
                 x = self.x_initial
                 y = self.y_initial
-                z = (self.x_initial**2+self.y_initial-11)**2+(self.x_initial+self.y_initial**2-7)**2
+                z = self.get_z_at(x, y)
             
-                x_vals = [x]
-                y_vals = [y]
-                z_vals = [z]
+                x_history = [x]
+                y_history = [y]
+                z_history = [z]
             
 
             # compute interim update
@@ -232,8 +298,8 @@ class Himmelblau:
             y_tilda = y+(alpha*vy)
             
             # compute gradient at interim point
-            gx = 4*x_tilda**3-4*x_tilda*y_tilda-42*x_tilda+4*x_tilda*y_tilda-14
-            gy = 4*y_tilda**3+2*x_tilda**2-26*y_tilda+4*x_tilda*y_tilda-22
+            gx = self.get_gx_at(x_tilda, y_tilda)
+            gy = self.get_gy_at(x_tilda, y_tilda)
 
             # Accumulate squared gradient 
             rx = rho*rx + (1-rho)*gx*gx
@@ -246,26 +312,37 @@ class Himmelblau:
             # apply update
             x = x+vx
             y = y+vy
-            z = (x**2+y-11)**2+(x+y**2-7)**2+10
+            z = self.get_z_at(x, y)
                 
             # record steps
-            x_vals.append(x)
-            y_vals.append(y)
-            z_vals.append(z)
+            x_history.append(x)
+            y_history.append(y)
+            z_history.append(z)
         
         steps = {
-            'x_vals': x_vals,
-            'y_vals': y_vals,
-            'z_vals': z_vals
+            'x_history': x_history,
+            'y_history': y_history,
+            'z_history': z_history
         }
         
         return steps
+    
+    def plot_steps(self, iters, steps_until_n=50, azimuth=10, elevation=55, color_map=cm.gray,
+                  n_back=20, plot_title=None, colors=['black', 'green']):
+        """Plots iteration history
         
+        Keyword arguments:
+        iters -- List of iteration dictionaries
+        steps_until_n -- the last iteration to plot
+        azimuth -- azimuth (default 10)
+        elevation -- elevation ( default 55)
+        color_map -- color map, a matplotlib ojbect
+        n_back -- the last n iteration on the plot
+        plot_title -- plot heading
+        colors=['black', 'green'] -- color for each type of 
         
-    def plot_steps(self, iters, steps_until_n=10, azimuth = 10, elevation = 55, color_map = cm.Greys,
-                  n_back = 20, plot_title = None, colors = ['black', 'green']):
-        """
-        iters: List of iteration dictionaries
+        Returns:
+        A plot
         """
         
         plt.ioff()
@@ -274,7 +351,7 @@ class Himmelblau:
         ax.set_axis_off()
         
         X, Y = np.meshgrid(self.x_space, self.y_space)
-        Z = (X**2+Y-11)**2+(X+Y**2-7)**2
+        Z = self.get_z_at(X, Y)
         
         # surface
         surf = ax.plot_surface(X, Y, Z,
@@ -287,17 +364,17 @@ class Himmelblau:
         for i in iters:
             steps = i
             
-            x_vals = steps['x_vals'][:steps_until_n]
-            y_vals = steps['y_vals'][:steps_until_n]
-            z_vals = steps['z_vals'][:steps_until_n]
+            x_history = steps['x_history'][:steps_until_n]
+            y_history = steps['y_history'][:steps_until_n]
+            z_history = steps['z_history'][:steps_until_n]
             
-            snake_len = len(x_vals[-n_back:])
+            snake_len = len(x_history[-n_back:])
             point_sizes = [i for i in range(snake_len-1)]
             point_sizes.append(100) # the last point is bigger
             
-            ax.scatter(x_vals[-n_back:],
-                       y_vals[-n_back:],
-                       z_vals[-n_back:],
+            ax.scatter(x_history[-n_back:],
+                       y_history[-n_back:],
+                       z_history[-n_back:],
                        c = colors[loop_counter], marker="o", alpha=1, s = point_sizes)
             loop_counter+=1
         

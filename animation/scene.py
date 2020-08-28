@@ -36,6 +36,7 @@ class GIFfromMP4Video(Scene):
         return f'GIF({self.gif_file_name!r} from {self.video_file_name!r})'
     
     def get_fmpeg_gif_cmd(self):
+        """Constructs and returns ffmpeg command"""
         return f'ffmpeg -i {self.video_file_name} -vf palettegen palette.png -y \n\
 ffmpeg -i {self.video_file_name} -pix_fmt rgb24 -i palette.png -lavfi paletteuse {self.gif_file_name} \n\
 rm palette.png -y'
