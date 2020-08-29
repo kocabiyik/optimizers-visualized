@@ -65,10 +65,10 @@ In the Nesterov Momentum, gradients are evaluated after the current velocity is 
 - $\epsilon$ is the learning rate. a hyperparameter.  
 - $\alpha$ controls the acceleration. a hyperparameter.  
 - $v$ is the velocity and it is initially set to 0. a hyperparameter.  
-1. Apply and interim update $\tilde{\theta} ← \theta + \alpha v$
-2. Compute gradients (at interim point) with parameter $\tilde{\theta}$ and set it to $g$.
-3. Compute velocity update as $v ← \alpha v − \epsilon g$
-4. Apply update: $\theta ← \theta + v$
+1. Apply and interim update $\tilde{\theta} ← \theta + \alpha v$  
+2. Compute gradients (at interim point) with parameter $\tilde{\theta}$ and set it to $g$.  
+3. Compute velocity update as $v ← \alpha v − \epsilon g$  
+4. Apply update: $\theta ← \theta + v$  
 
 Below is a visualization of the standard momentum (black) vs Nesterov momentum (red).  
 The Nesterov Momentum is not oscilating much comparing to the standard Momentum algorithm. 
