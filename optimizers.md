@@ -1,12 +1,12 @@
 # Visualizing Neural Network Optimizers
 
-In practice, tuning a neural network might be an art rather than a science. Having a strong intuition about algorithms are helpful for hacking and quick prototyping. For me, the most useful tools for grasping good intuition are visualizations and analogies.  
+Having a strong intuition about algorithms are helpful for hacking and quick prototyping. For me, the most useful tools for grasping good intuition are visualizations and analogies.  
 
-The Deep Learning book has a comprehensive chapter on optimizers. I am currently reading it and practicing them by implementing them into code. I am sharing my visualizations here so that it might be helpful for other learners.  
-
-Optimizers are how we are updating the parameters. The objective is finding a set of $\theta$ values so that $J(\theta)$ is significantly lower. Starting with a relatively simple one:  
+[The Deep Learning book](https://www.deeplearningbook.org/) has [a comprehensive chapter](https://www.deeplearningbook.org/contents/optimization.html) on optimizers. I am currently reading it and practicing them by implementing them into code. I am sharing my visualizations here so that it might be helpful for other learners.  
 
 ## Basic Optimization Algorithms
+
+What is an optimizer? It is how we are updating the parameters. The objective is finding a set of $\theta$ values so that $J(\theta)$ is significantly lower. Starting with a relatively simple one:  
 
 ### Stochastic Gradient Descent
 
@@ -25,7 +25,7 @@ One way of making the learning faster is Decaying the Learning Rate:
 - The learning rate after the iteration $\tau$ is kept constant.  
 - $\epsilon_{\tau}$ is generally set to 1 % of the initial learning rate ($\epsilon_0$).  
 
-Below animation is the update steps with a decaying learning rate.  The initial learning rate is set to a higher value than the one in the previous example, but it is decayed after the 10. iteration.  
+Below animation is the update steps with a decaying learning rate applied.  The initial learning rate is set to a higher value than the one in the previous example, but it is decayed after some iteration.  
 
 ![SGD with Decaying Learning Rate](images/sgd-with-lr-decay.gif)  
 
@@ -33,16 +33,18 @@ Below animation is the update steps with a decaying learning rate.  The initial 
 
 Momentum is one technique for accelerating the learning.  
 
-Momentum requires a new hyperparameter: $\alpha$. It controls the acceleration. It is a common practice to pick 0.9, 0.95 and 0.99. It doesn't have to be a fixed value but can be adapted in the training process.  
+Momentum requires a new hyperparameter: $\alpha$ which controls the acceleration. It is a common practice to pick a value of 0.9, 0.95 or 0.99. It doesn't have to be a fixed value but can be adapted in the training process.  
 
 **Implementation:**
 
-- $\epsilon$ is the learning rate
-- $\alpha$ is the hyperparameter for the acceleration,
-- $\theta$ and velocity $v$  are the initial parameters. $v$ is initially set to 0.  
-- Compute gradients and set it to $g$.  
-- Compute velocity update as $v ← \alpha v − \epsilon g$
-- Apply update: $\theta ← \theta + v$
+- $\theta$ is the parameters to learn.  
+- $\epsilon$ is the learning rate. a hyperparameter.  
+- $\alpha$ controls the acceleration. a hyperparameter.  
+- $v$ is the velocity and it is initially set to 0. a hyperparameter.  
+
+1. Compute gradients and set it to $g$.  
+2. Compute velocity update as $v ← \alpha v − \epsilon g$
+3. Apply update: $\theta ← \theta + v$
 
 Here is an animation in a 3D surface:
 
@@ -59,15 +61,16 @@ In the Nesterov Momentum, gradients are evaluated after the current velocity is 
 
 **Implementation:**
 
-- $\epsilon$ is the learning rate
-- $\alpha$ is the hyperparameter for the acceleration,
-- $\theta$ and velocity $v$  are the initial parameters. $v$ is initially set to 0.  
-- Apply and interim update $\tilde{\theta} ← \theta + \alpha v$
-- Compute gradients (at interim point) with parameter $\tilde{\theta}$ and set it to $g$.
-- Compute velocity update as $v ← \alpha v − \epsilon g$
-- Apply update: $\theta ← \theta + v$
+- $\theta$ is the parameters to learn.  
+- $\epsilon$ is the learning rate. a hyperparameter.  
+- $\alpha$ controls the acceleration. a hyperparameter.  
+- $v$ is the velocity and it is initially set to 0. a hyperparameter.  
+1. Apply and interim update $\tilde{\theta} ← \theta + \alpha v$
+2. Compute gradients (at interim point) with parameter $\tilde{\theta}$ and set it to $g$.
+3. Compute velocity update as $v ← \alpha v − \epsilon g$
+4. Apply update: $\theta ← \theta + v$
 
-Below is a visualization of the Momentum (black) vs Nesterov Momentum (red).  
+Below is a visualization of the standard momentum (black) vs Nesterov momentum (red).  
 The Nesterov Momentum is not oscilating much comparing to the standard Momentum algorithm. 
 
 ![Momentum vs Nesterov Momentum Comparison Animation](images/momentum-vs-nesterov-momentum.gif)  
