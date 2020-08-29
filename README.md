@@ -2,4 +2,3 @@
 
 - Gradient Descent  
 - Gradient Descent with Momentum  
-
