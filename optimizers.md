@@ -93,8 +93,12 @@ The next algorithm, RMSProp will handle this issue.
 
 ### RMSProp
 
+RMSProp is not taking the entire history but the recent ones. Here is a comparison of AdaGrad (gray) and RMSProp (blue):  
+
 ![AdaGrad vs RMSProp](images/adagrad-vs-rmsprop.gif)  
 
 ### Adam
+
+Adam is like the combination of RMSProp and Momentum.  
 
 ![Adam](images/adam.gif)  

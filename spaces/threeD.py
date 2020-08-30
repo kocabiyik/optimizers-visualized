@@ -18,6 +18,8 @@ class Surface:
             return x**2+y**2
         if self.test_function=='matyas':
             return (0.26*(x**2+y**2))-(0.48*x*y)
+        if self.test_function=='saddle':
+            return x**2-y**2
     
     def get_gx_at(self, x, y):
         if self.test_function=='himmelblau':
@@ -26,7 +28,9 @@ class Surface:
             return 2*x
         if self.test_function=='matyas':
             return (2*0.26*x)-(0.48*y)
-    
+        if self.test_function=='saddle':
+            return 2*x
+        
     def get_gy_at(self, x, y):
         if self.test_function=='himmelblau':
             return 4*y**3+2*x**2-26*y+4*x*y-22
@@ -34,6 +38,8 @@ class Surface:
             return 2*y
         if self.test_function=='matyas':
             return (2*0.26*y)-(0.48*x)
+        if self.test_function=='saddle':
+            return -2*y
 
 class State(Surface):
     
@@ -167,7 +173,10 @@ class State(Surface):
                 x_history = [x]
                 y_history = [y]
                 z_history = [z]
-            
+                delta_theta_x_history = [None]
+                delta_theta_y_history = [None]
+                rx_history = [None]
+                ry_history = [None]
 
             # compute gradient
             gx = self.get_gx_at(x, y)
@@ -190,11 +199,19 @@ class State(Surface):
             x_history.append(x)
             y_history.append(y)
             z_history.append(z)
+            delta_theta_x_history.append(delta_theta_x)
+            delta_theta_y_history.append(delta_theta_y)
+            rx_history.append(rx)
+            ry_history.append(ry)
         
         steps = {
             'x_history': x_history,
             'y_history': y_history,
-            'z_history': z_history
+            'z_history': z_history,
+            'delta_theta_x_history': delta_theta_x_history,
+            'delta_theta_y_history': delta_theta_y_history,
+            'rx_history': rx_history,
+            'ry_history': ry_history
         }
         
         return steps
@@ -231,6 +248,10 @@ class State(Surface):
                 x_history = [x]
                 y_history = [y]
                 z_history = [z]
+                delta_x_history = [None]
+                delta_y_history = [None]
+                rx_history = [None]
+                ry_history = [None]
             
             # compute gradient
             gx = self.get_gx_at(x,y)
@@ -241,28 +262,36 @@ class State(Surface):
             ry = (rho*ry) + ((1-rho)*gy*gy)
             
             # compute update
-            delta_theta_x = (-1)*(epsilon/math.sqrt(delta+rx))*gx
-            delta_theta_y = (-1)*(epsilon/math.sqrt(delta+ry))*gy
+            delta_x = (-1)*(epsilon/math.sqrt(delta+rx))*gx
+            delta_y = (-1)*(epsilon/math.sqrt(delta+ry))*gy
             
             # apply update
-            x = x+delta_theta_x
-            y = y+delta_theta_y
+            x = x+delta_x
+            y = y+delta_y
             z = self.get_z_at(x, y)
                 
             # record steps
             x_history.append(x)
             y_history.append(y)
             z_history.append(z)
+            delta_x_history.append(delta_x)
+            delta_y_history.append(delta_y)
+            rx_history.append(rx)
+            ry_history.append(ry)
         
         steps = {
             'x_history': x_history,
             'y_history': y_history,
-            'z_history': z_history
+            'z_history': z_history,
+            'delta_x_history': delta_x_history,
+            'delta_y_history': delta_y_history,
+            'rx_history': rx_history,
+            'ry_history': ry_history
         }
         
         return steps
     
-    def run_adam(self, epsilon=0.001, rho =0.9, alpha=0.9, delta=1.e-7):
+    def run_adam(self, epsilon=0.001, rho1 =0.9, rho2=0.999, alpha=0.9, delta=1.e-8):
 
         """Runs Adam algorithm and returns the parameter update history.
         
@@ -280,12 +309,14 @@ class State(Surface):
         A dictionary containing 3 lists: x_history, y_history, z_history
         """
         
-        # initial velocities
-        vx = 0
-        vy = 0
-  
-        rx = 0 # gradient accumulation variable
+        # Initialize 1st and 2nd moment variables s = 0, r = 0
+        rx = 0
         ry = 0
+        sx = 0
+        sy = 0
+        
+        # Initialize time step t = 0
+        t = 0
         
         for i in range(self.iteration):
             
@@ -299,26 +330,35 @@ class State(Surface):
                 y_history = [y]
                 z_history = [z]
             
-
-            # compute interim update
-            x_tilda = x+(alpha*vx)
-            y_tilda = y+(alpha*vy)
+             # compute gradient
+            gx = self.get_gx_at(x,y)
+            gy = self.get_gy_at(x,y)  
             
-            # compute gradient at interim point
-            gx = self.get_gx_at(x_tilda, y_tilda)
-            gy = self.get_gy_at(x_tilda, y_tilda)
-
-            # Accumulate squared gradient 
-            rx = rho*rx + (1-rho)*gx*gx
-            ry = rho*ry+ (1-rho)*gy*gy    
-
-            # compute velocity update
-            vx = alpha * vx - epsilon * gx
-            vy = alpha * vy - epsilon * gy                
-
+            t = t+1
+            
+            # Update biased ﬁrst moment estimate
+            sx = rho1*sx+(1-rho1)*gx
+            sy = rho1*sy+(1-rho1)*gy
+            
+            # Update biased second moment estimate: r ← ρ2r + (1 − ρ2)g  g
+            rx = (rho2*rx) + ((1-rho2)*gx*gx)
+            ry = (rho2*ry) + ((1-rho2)*gy*gy)
+            
+            # Correct bias in ﬁrst moment
+            sx_head = sx/(1-rho1)
+            sy_head = sy/(1-rho1)
+            
+            # Correct bias in second moment:
+            rx_head = rx/(2-rho2)
+            ry_head = ry/(2-rho2)
+            
+            # compute update
+            delta_theta_x = (-1)*epsilon*(sx_head/(math.sqrt(rx_head)+delta))
+            delta_theta_y = (-1)*epsilon*(sy_head/(math.sqrt(ry_head)+delta))
+            
             # apply update
-            x = x+vx
-            y = y+vy
+            x = x+delta_theta_x
+            y = y+delta_theta_y
             z = self.get_z_at(x, y)
                 
             # record steps
