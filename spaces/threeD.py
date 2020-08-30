@@ -16,33 +16,40 @@ class Surface:
             return (x**2+y-11)**2+(x+y**2-7)**2
         if self.test_function=='parabolic':
             return x**2+y**2
+        if self.test_function=='matyas':
+            return (0.26*(x**2+y**2))-(0.48*x*y)
     
     def get_gx_at(self, x, y):
         if self.test_function=='himmelblau':
             return 4*x**3-4*x*y-42*x+4*x*y-14
         if self.test_function=='parabolic':
             return 2*x
+        if self.test_function=='matyas':
+            return (2*0.26*x)-(0.48*y)
     
     def get_gy_at(self, x, y):
         if self.test_function=='himmelblau':
             return 4*y**3+2*x**2-26*y+4*x*y-22
         if self.test_function=='parabolic':
             return 2*y
+        if self.test_function=='matyas':
+            return (2*0.26*y)-(0.48*x)
 
 class State(Surface):
     
     """Iterates and returns history
     
     """
-    def __init__(self, x_initial = 0, y_initial = 0, test_function = 'parabolic', space_lim_min = -5, space_lim_max = 5):
+    def __init__(self, x_initial = 0, y_initial = 0, test_function = 'parabolic', space_lim_min = -5, space_lim_max = 5, iteration=120):
         super().__init__(test_function)
         self.x_initial = x_initial
         self.y_initial = y_initial
+        self.iteration = iteration
         self.x_space = np.arange(space_lim_min, space_lim_max, 0.25)
         self.y_space = np.arange(space_lim_min, space_lim_max, 0.25)
 
     # Stochastic Gradient Descent
-    def run_gd(self, epsilon=0.01, alpha=0.9, iteration=50, nesterov=False):
+    def run_gd(self, epsilon=0.01, alpha=0.9, nesterov=False):
         
         
         """Runs Gradient Descent algorithm with momentum and returns the parameter update history.
@@ -64,7 +71,7 @@ class State(Surface):
         vx = 0
         vy = 0
         
-        for i in range(iteration):
+        for i in range(self.iteration):
             
             # keep the initial parameter values
             if i == 0:
@@ -129,7 +136,7 @@ class State(Surface):
         
         return steps
     
-    def run_adagrad(self, epsilon=0.001, delta=1.e-7, iteration=50):
+    def run_adagrad(self, epsilon=0.001, delta=1.e-7):
         
         """Runs AdaGrad algorithm and returns the parameter update history.
         
@@ -149,7 +156,7 @@ class State(Surface):
         rx = 0 # gradient accumulation variable
         ry = 0
         
-        for i in range(iteration):
+        for i in range(self.iteration):
             
             # keep the initial parameter values
             if i == 0:
@@ -192,7 +199,7 @@ class State(Surface):
         
         return steps
     
-    def run_rmsprop(self, epsilon=0.001, rho=0.9, delta=1.e-7, iteration=50):
+    def run_rmsprop(self, epsilon=0.001, rho=0.9, delta=1.e-6):
         
         """Runs RMSProp algorithm and returns the parameter update history.
         
@@ -202,7 +209,7 @@ class State(Surface):
         Keyword Arguments:
         epsilon -- the learning rate
         rho -- decay rate (default 0.9)
-        delta -- small constant for numerical stability (default 1.e-7)
+        delta -- small constant for numerical stability (default 1.e-6)
         iteration -- number of parameter updates (default 50)
         
         Returns:
@@ -213,7 +220,7 @@ class State(Surface):
         rx = 0 # gradient accumulation variable
         ry = 0
         
-        for i in range(iteration):
+        for i in range(self.iteration):
             
             # keep the initial values
             if i == 0:
@@ -255,7 +262,7 @@ class State(Surface):
         
         return steps
     
-    def run_adam(self, epsilon=0.001, rho =0.9, alpha=0.9, delta=1.e-7, iteration=50):
+    def run_adam(self, epsilon=0.001, rho =0.9, alpha=0.9, delta=1.e-7):
 
         """Runs Adam algorithm and returns the parameter update history.
         
@@ -280,7 +287,7 @@ class State(Surface):
         rx = 0 # gradient accumulation variable
         ry = 0
         
-        for i in range(iteration):
+        for i in range(self.iteration):
             
             # keep the initial values
             if i == 0:
