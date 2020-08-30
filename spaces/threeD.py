@@ -174,12 +174,12 @@ class State(Surface):
             gy = self.get_gy_at(x, y)
             
             # accumulate squared gradient 
-            rx = rx + gx*gx
-            ry = ry + gy*gy
+            rx = rx + (gx*gx)
+            ry = ry + (gy*gy)
             
             # compute update
-            delta_theta_x = -(epsilon*gx)/(delta+math.sqrt(rx))
-            delta_theta_y = -(epsilon*gy)/(delta+math.sqrt(ry))
+            delta_theta_x = (-1)*(epsilon/(delta+math.sqrt(rx)))*gx
+            delta_theta_y = (-1)*(epsilon/(delta+math.sqrt(ry)))*gy
             
             # apply update
             x = x+delta_theta_x
@@ -237,12 +237,12 @@ class State(Surface):
             gy = self.get_gy_at(x,y)
             
             # accumulate squared gradient 
-            rx = rho*rx + (1-rho)*gx*gx
-            ry = rho*ry+ (1-rho)*gy*gy
+            rx = (rho*rx) + ((1-rho)*gx*gx)
+            ry = (rho*ry) + ((1-rho)*gy*gy)
             
             # compute update
-            delta_theta_x = -(epsilon*gx)/(delta+math.sqrt(rx))
-            delta_theta_y = -(epsilon*gy)/(delta+math.sqrt(ry))
+            delta_theta_x = (-1)*(epsilon/math.sqrt(delta+rx))*gx
+            delta_theta_y = (-1)*(epsilon/math.sqrt(delta+ry))*gy
             
             # apply update
             x = x+delta_theta_x

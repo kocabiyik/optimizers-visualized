@@ -86,8 +86,6 @@ Technically speaking:
 - Small decrease in the learning rate when the partial derivative is small.  
 - Rapid decrease in the learning rate when the partial derivative is large.  
 
-![AdaGrad](images/adagrad.gif)  
-
 One issue:  
 The accumulation of the gradients _from the beginning_ is resulting excessive decrease in the learning rate.  
 It works fine in a convex function, but it might be stuck in local minimums in non-convex settings.  
@@ -95,7 +93,7 @@ The next algorithm, RMSProp will handle this issue.
 
 ### RMSProp
 
-![AdaGrad](images/rmsprop.gif)  
+![AdaGrad vs RMSProp](images/adagrad-vs-rmsprop.gif)  
 
 ### Adam
 
