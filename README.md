@@ -59,4 +59,4 @@ cmd_gif = gif.get_fmpeg_gif_cmd()
 os.system(cmd_gif)
 ```
 
-![Optimizers-Visualized](images/optimizers-visualized.gif)
+![Optimizers-Visualized](images/optimizers-visualized.gif)  
