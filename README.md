@@ -15,10 +15,10 @@ A 3D Example:
               test_function='himmelblau', 
               iteration=128)
     
-    steps_standard = h.run_gd(epsilon = 0.001, alpha = 0.9, nesterov=False)
-    steps_nesterov = h.run_gd(epsilon = 0.001, alpha = 0.9, nesterov=True)
-    steps_adam = h.run_adam(epsilon=0.01)
-    steps_adagrad = h.run_adagrad(epsilon = 1)
+    steps_standard = state.run_gd(epsilon = 0.001, alpha = 0.9, nesterov=False)
+    steps_nesterov = state.run_gd(epsilon = 0.001, alpha = 0.9, nesterov=True)
+    steps_adam = state.run_adam(epsilon=0.01)
+    steps_adagrad = state.run_adagrad(epsilon = 1)
     
 ![Optimizers-Visualized](images/optimizers-visualized.png)
 
