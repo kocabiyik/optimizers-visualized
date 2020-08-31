@@ -35,9 +35,9 @@ class Surface:
     def get_gy_at(self, x, y):
         if self.test_function == 'himmelblau':
             return 4*y**3+2*x**2-26*y+4*x*y-22
-        if self.test_functio n == 'parabolic':
+        if self.test_function == 'parabolic':
             return 2*y
-        if self.test_functio n == 'matyas':
+        if self.test_function == 'matyas':
             return (2*0.26*y)-(0.48*x)
         if self.test_function == 'saddle':
             return -2*y
