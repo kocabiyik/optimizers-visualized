@@ -101,4 +101,4 @@ RMSProp is not taking the entire history but the recent ones. Here is a comparis
 
 Adam is like the combination of RMSProp and Momentum.  
 
-![Adam](images/adam.gif)  
+![Adam](images/adam.gif)
