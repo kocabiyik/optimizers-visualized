@@ -30,6 +30,8 @@ Steps:
 1. Plotting and storing each iteration in the `frames` directory and creating a video with `ffmpeg` library.  
 2. Generate GIF from video with the `ffmpeg`.  
 
+Plotting frames:
+
     ITERS=120
     for i in range(ITERS):
         file_path = 'frames/plot_{0:03}.png'.format(i)
@@ -42,7 +44,9 @@ Steps:
                            colors = ['gray', 'red']
                           )
         fig.savefig(file_path)
-        
+
+Creating Video:  
+
     video = Video(dir_to_save='frames', video_name=FILE_NAME_WO_EXTENSION, frame_rate = 29)
     cmd_video = video.get_fmpeg_video_cmd()
     os.system(cmd_video)
