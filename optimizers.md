@@ -20,7 +20,7 @@ One way of making the learning faster is Decaying the Learning Rate:
 
 - The learning rate is decayed until the iteration $\tau$.  
 
-- The learning rate on the iteration $k$ calculated as $ \epsilon_k = (1-\alpha)\epsilon_0+\alpha \epsilon_{\tau}$ where $\alpha = \frac{k}{\tau}$  
+- The learning rate on the iteration $k$ calculated as $\epsilon_k=(1-\alpha)\epsilon_0+\alpha \epsilon_{\tau}$ where $\alpha = \frac{k}{\tau}$  
 
 - The learning rate after the iteration $\tau$ is kept constant.  
 - $\epsilon_{\tau}$ is generally set to 1 % of the initial learning rate ($\epsilon_0$).  

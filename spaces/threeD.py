@@ -97,7 +97,6 @@ class State(Surface):
                 y_tilda = y+(alpha*vy)
                 
                 # compute gradient at interim point
-                current_state = self.get_gy_at(x_tilda, y_tilda)
                 gx = self.get_gx_at(x_tilda, y_tilda)
                 gy = self.get_gy_at(x_tilda, y_tilda)
                 
@@ -114,7 +113,6 @@ class State(Surface):
             else:
                 
                 # compute gradient
-                current_state = self.get_z_at(x, y)
                 gx = self.get_gx_at(x, y)
                 gy = self.get_gy_at(x, y)
             
@@ -124,10 +122,8 @@ class State(Surface):
             
                 # apply update
                 x = x+vx
-                y = y+vy
-                
-                
-                z = self.get_gy_at(x, y)
+                y = y+vy      
+                z = self.get_z_at(x, y)
                 
             # record steps
             x_history.append(x)
@@ -393,7 +389,7 @@ class State(Surface):
         """
         
         plt.ioff()
-        fig = plt.figure(figsize = (16,9))
+        fig = plt.figure(figsize = (10,10))
         ax = fig.gca(projection='3d')
         ax.set_axis_off()
         
