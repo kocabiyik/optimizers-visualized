@@ -389,7 +389,7 @@ class State(Surface):
         """
         
         plt.ioff()
-        fig = plt.figure(figsize = (10,10))
+        fig = plt.figure(figsize = (16,9))
         ax = fig.gca(projection='3d')
         ax.set_axis_off()
         
