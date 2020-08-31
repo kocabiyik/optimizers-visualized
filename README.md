@@ -31,30 +31,32 @@ Steps:
 2. Generate GIF from video with the `ffmpeg`.  
 
 Plotting frames:
-
-    ITERS=120
-    for i in range(ITERS):
-        file_path = 'frames/plot_{0:03}.png'.format(i)
-        fig = h.plot_steps([steps_standard],
-                           steps_until_n=i,
-                           azimuth=5+5*math.log(i+1),
-                           elevation = 20+5*math.log(i+1),
-                           color_map = cm.gray, n_back = 20,
-                           plot_title = 'Gradient Descent with Momentum',
-                           colors = ['gray', 'red']
-                          )
-        fig.savefig(file_path)
+```
+ITERS=120
+for i in range(ITERS):
+    file_path = 'frames/plot_{0:03}.png'.format(i)
+    fig = h.plot_steps([steps_standard],
+                       steps_until_n=i,
+                       azimuth=5+5*math.log(i+1),
+                       elevation = 20+5*math.log(i+1),
+                       color_map = cm.gray, n_back = 20,
+                       plot_title = 'Gradient Descent with Momentum',
+                       colors = ['gray', 'red']
+                      )
+    fig.savefig(file_path)
+```
 
 Creating Video:  
+```
+video = Video(dir_to_save='frames', video_name=FILE_NAME_WO_EXTENSION, frame_rate = 29)
+cmd_video = video.get_fmpeg_video_cmd()
+os.system(cmd_video)
 
-    video = Video(dir_to_save='frames', video_name=FILE_NAME_WO_EXTENSION, frame_rate = 29)
-    cmd_video = video.get_fmpeg_video_cmd()
-    os.system(cmd_video)
-    
-    video
-    
-    gif = GIFfromMP4Video(file_name=FILE_NAME_WO_EXTENSION, dir_to_save = '', frame_rate = 29)
-    cmd_gif = gif.get_fmpeg_gif_cmd()
-    os.system(cmd_gif)
+video
+
+gif = GIFfromMP4Video(file_name=FILE_NAME_WO_EXTENSION, dir_to_save = '', frame_rate = 29)
+cmd_gif = gif.get_fmpeg_gif_cmd()
+os.system(cmd_gif)
+```
 
 ![Optimizers-Visualized](images/optimizers-visualized.gif)
