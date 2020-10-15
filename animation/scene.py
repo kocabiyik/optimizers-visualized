@@ -7,7 +7,7 @@ class Scene:
         print(self.frame_rate, self.dir_to_save)
 
 class Video(Scene):
-    def __init__(self, video_name, dir_to_save, frame_rate, duration_in_sec=5, resolution = '854x480', plot_naming = 'plot_%03d', video_format='mp4'):
+    def __init__(self, video_name, dir_to_save, frame_rate, duration_in_sec=5, resolution = '1920x1080', plot_naming = 'plot_%03d', video_format='mp4'):
         super().__init__(dir_to_save, frame_rate)
         self.video_name = video_name+'.'+video_format
         self.duration_in_sec = duration_in_sec
