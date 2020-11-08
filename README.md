@@ -6,7 +6,7 @@ Read the detailed blog post: [Visualizing Machine Learning Optimizers](https://i
 
 A 3D Example:  
 
-```
+```python
 from spaces.threeD import State
 from spaces.twoD import SGDVisOneVariable
 
@@ -43,7 +43,8 @@ Steps:
 2. Generate GIF from video with the `ffmpeg`.  
 
 Plotting frames:
-```
+
+```python
 for i in range(120):
     file_path = "frames/plot_{0:03}.png".format(i)
     fig = h.plot_steps(
@@ -60,7 +61,8 @@ for i in range(120):
 ```
 
 Creating Video:  
-```
+
+```python
 video = Video(dir_to_save="frames", video_name=FILE_NAME_WO_EXTENSION, frame_rate=29)
 cmd_video = video.get_fmpeg_video_cmd()
 os.system(cmd_video)
