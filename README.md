@@ -2,6 +2,8 @@
 
 Visualizing learning steps on 2D spaces and 3D Surfaces.  
 
+Read the detailed blog post: [Visualizing Machine Learning Optimizers](https://ikocabiyik.com/blog/en/visualizing-ml-optimizers/)  
+
 A 3D Example:  
 
 ```
