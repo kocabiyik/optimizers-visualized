@@ -42,15 +42,16 @@ Below animation is the update steps with a decaying learning rate applied.  The 
 
 ### Momentum  
 
-Momentum is one technique for accelerating the learning.  
+Momentum is one technique for accelerating learning.  
 
-Momentum requires a new hyperparameter: $\alpha$ which controls the acceleration. It is a common practice to pick a value of 0.9, 0.95 or 0.99. It doesn't have to be a fixed value but can be adapted in the training process.  
+Momentum requires a new hyperparameter: $\alpha$ which controls the acceleration. It is a common practice to pick a value of 0.9, 0.95, or 0.99. It doesn't have to be a fixed value but can be adapted in the training process.  
 
 **Implementation:**  
 
 - $\theta$ is the parameter to learn.  
 - $\epsilon$ is the learning rate. a hyperparameter.  
-- $\alpha$ controls the acceleration. a hyperparameter.  
+- $\alpha$ controls the 
+ration. a hyperparameter.  
 - $v$ is the velocity and it is initially set to 0. a hyperparameter.  
 
 do iteratively:  
@@ -64,7 +65,11 @@ Here is an animation in a 3D surface:
 
 
 The problem of oscillations:  
-Applying momentum can result in too much oscillations. As you can see in the above illustrations, there many U turns and spirals around a local/global minimum points. Nesterov Momentum is reducing those oscillations.  
+Applying momentum can result in too 
+
+
+
+oscillations. As you can see in the above illustrations, there many U-turns and spirals around local/global minimum points. Nesterov Momentum is reducing those oscillations.  
 
 ### Nesterov Momentum  
 
@@ -93,15 +98,15 @@ The Nesterov Momentum is not oscilating much comparing to the standard Momentum 
 
 ### AdaGrad  
 
-It is simple. We keep putting on the breaks on the descending hills, and we don't put too much on the plateaus.  
+It is simple. We keep putting on the breaks on the descending hills, and we don't put too many on the plateaus.  
 
 Technically speaking:  
 
-- Small decrease in the learning rate when the partial derivative is small.  
-- Rapid decrease in the learning rate when the partial derivative is large.  
+- A small decrease in the learning rate when the partial derivative is small.  
+- A rapid decrease in the learning rate when the partial derivative is large.  
 
 One issue:  
-The accumulation of the gradients _from the beginning_ is resulting excessive decrease in the learning rate.  
+The accumulation of the gradients _from the beginning_ is resulting in an excessive decrease in the learning rate.  
 It works fine in a convex function, but it might be stuck in local minimums in non-convex settings.  
 The next algorithm, RMSProp will handle this issue.  
 
